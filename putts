@@ -47,7 +47,7 @@ sub INT_handler {
 
     foreach my $t (qw(10 100 250 300 1000)) {
 	if(abs($ticks-$t) < $t*0.15 || abs($ticks-$t) < 50) {
-	    print "estimated ticks: $t\n";
+	    print "estimated ticks: $t Hz\n";
 	    $ticks = $t;
 	    last;
 	}
