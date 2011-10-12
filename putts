@@ -1,0 +1,81 @@
+#!/usr/bin/perl
+
+# putts - Probe Uptime by Tcp TimeStamps
+#
+# Authors:
+#   Thomas Liske <thomas@fiasko-nw.net>
+#
+# Copyright Holder:
+#   2011 (C) Thomas Liske <thomas@fiasko-nw.net>
+#
+# License:
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this package; if not, write to the Free Software
+#   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+#
+
+use warnings;
+use strict;
+use Date::Parse;
+use POSIX qw(strftime);
+
+my $ip = shift || die;
+
+open(HDUMP, "tcpdump -l -ni any src $ip and tcp |") || die "Could not fork tcpdump: $!\n";
+my ($last_ts, $last_tsv) = 0;
+my ($first_ts, $first_tsv) = 0;
+
+sub INT_handler {
+    sleep 2;
+
+    print "\n";
+    die "No data!\n\n" if($last_ts == 0 || $first_ts == 0);
+
+    my $ticks = ($last_tsv - $first_tsv) / ($last_ts - $first_ts);
+
+    print "measured ticks : $ticks Hz\n";
+
+    foreach my $t (qw(10 100 250 300 1000)) {
+	if(abs($ticks-$t) < $t*0.15 || abs($ticks-$t) < 50) {
+	    print "estimated ticks: $t\n";
+	    $ticks = $t;
+	    last;
+	}
+    }
+    my $up = $last_tsv/$ticks;
+    print 'Uptime         : ', ($up > 86400 ? int($up/86400).' days, ':''), strftime("%T", localtime($up)), "\n";
+    print 'Up since       : ', scalar localtime(time()-$up),"\n\n";
+}
+$SIG{'INT'} = 'INT_handler';
+
+$|++;
+while(<HDUMP>) {
+    chomp;
+
+    next unless(/^(\d\d:\d\d:\d\d\.\d+) IP $ip.+TS val (\d+) ecr/);
+    my ($tss, $tsv) = ($1, $2);
+    my $ts = str2time($tss);
+
+    next unless($tsv > 0);
+    die "TS not ascending!\n" if($last_tsv > $tsv);
+
+    if($first_ts == 0) {
+	$first_ts = $ts;
+	$first_tsv = $tsv;
+    }
+    elsif($last_ts < $ts) {
+	$last_ts = $ts;
+	$last_tsv = $tsv;
+	print " $tss: $tsv\n";
+    }
+}
