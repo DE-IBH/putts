@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+	<style type="text/css"><!--
+ 	    a { text-decoration: none; }
+	    a:hover { text-decoration: underline; }
+	    h1 { font-family: arial, helvetica, sans-serif; font-size: 18pt; font-weight: bold;}
+	    h2 { font-family: arial, helvetica, sans-serif; font-size: 14pt; font-weight: bold;}
+	    body, td { font-family: arial, helvetica, sans-serif; font-size: 10pt; }
+	    th { font-family: arial, helvetica, sans-serif; font-size: 11pt; font-weight: bold; }
+	    pre { background: lightgrey; padding: 4px}
+	    div.changelog {
+		float: right;
+		background-color: #f0f0f0;
+		border-style: dashed;
+		border-color: #000000;
+		border-width: 1px;
+		font-size: small;
+		width: 27em;
+
+		padding: 3px;
+		margin-top: 0px;
+		margin-right: 0px;
+		margin-left: 10px;
+	    }
+	//--></style>
+	<title>putts - Probe Uptime by Tcp TimeStamps</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<meta name="author" content="thomas@fiasko-nw.net" />
+	<meta name="Revisit-After" content="14 days" />
+	<meta name="robots" content="index, follow" />
+	<link rel="SHORTCUT ICON" href="res/acid.ico" />
+    </head>
+
+    <body style="background-color: #faffff" background="res/ctrl.gif">
+    <table width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+	<td align="left">
+	    <h1>putts - Probe Uptime by Tcp TimeStamps</h1>
+	</td>
+<!--        <td align="right"> <a href="."><img src="res/home.gif" width="9" height="12" style="border: 0px" alt="home"/></a></td>-->
+</tr>
+</table>
+
+<p>
+putts sniffs for Tcp traffic of a remote host. If those Tcp packets contains
+timestamps (RFC1323) this tool might be used to get the systems uptime.
+</p>
+
+<p>
+This script calls tcpdump(8) to get the Tcp timestamps of the target host.
+You have to make Tcp traffic to the remote host after starting putts. Terminate
+putts by pressing C-C after a while. Putts will print the assumed uptime
+if enough data is available.
+</p>
+
+<hr style="margin-bottom: 0px" />
+
+<table cellspacing="5" width="100%" style="margin-top: 0px">
+<tr>
+    <td valign="middle" width="47%" align="left"><small>10-12-2011, <a href="mailto:thomas@fiasko-nw.net">Thomas Liske</a></small></td>
+    <td valign="middle" width="1%"><a href="http://validator.w3.org/check/referer"><img src="res/valid-xhtml10.png" alt="Valid XHTML 1.0!" height="31" width="88" style="border: 0px" /></a></td>
+</tr>
+</table>
+</body>
+</html>
