@@ -27,13 +27,69 @@
 use warnings;
 use strict;
 use Date::Parse;
+use Getopt::Std;
 use POSIX qw(strftime);
 
-my $ip = shift || die;
+use constant {
+    PUTTS_VERSION => '0.1',
+};
 
-open(HDUMP, "tcpdump -l -ni any src $ip and tcp |") || die "Could not fork tcpdump: $!\n";
-my ($last_ts, $last_tsv) = 0;
-my ($first_ts, $first_tsv) = 0;
+$Getopt::Std::STANDARD_HELP_VERSION++;
+sub HELP_MESSAGE {
+    print <<USG;
+Usage:
+
+  putts [-i <int>] <host>
+
+    -i <int>	interface (default: any)
+    <host>	host ip to be probed
+
+USG
+}
+
+sub VERSION_MESSAGE {
+    print 'putts ', PUTTS_VERSION;
+    print <<LIC;
+
+
+Copyright: 2011 (C) Thomas Liske <thomas\@fiasko-nw.net>
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+Send bug reports to thomas\@fiasko-nw.net.
+
+LIC
+}
+
+our $opt_i = 'any';
+getopts('i:');
+
+my $ip = shift;
+
+unless(defined($ip) && $ip =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/) {
+    VERSION_MESSAGE();
+
+    print <<MISS;
+ERROR:
+
+  Missing or invalid IP address given!
+
+MISS
+
+    HELP_MESSAGE();
+
+    exit(1);
+}
+
+my $cmd = "tcpdump -l -ni $opt_i src $ip and tcp";
+print "\$ $cmd\n";
+
+open(HDUMP, "$cmd |") || exit(2);
+my ($last_ts, $last_tsv) = (0, 0);
+my ($first_ts, $first_tsv) = (0, 0);
 
 sub INT_handler {
     sleep 2;
@@ -57,6 +113,9 @@ sub INT_handler {
     print 'Up since       : ', scalar localtime(time()-$up),"\n\n";
 }
 $SIG{'INT'} = 'INT_handler';
+
+sleep 1;
+print "\nDo some IP traffic with $ip from this host (i.e. nmap -PN $ip).\nPress C-C to get the estimation result.\n\n";
 
 $|++;
 while(<HDUMP>) {
