@@ -41,6 +41,7 @@ Usage:
 
   putts [-i <int>] <host>
 
+    -n		fork nmap to scan <host>
     -i <int>	interface (default: any)
     <host>	host ip to be probed
 
@@ -65,7 +66,8 @@ LIC
 }
 
 our $opt_i = 'any';
-getopts('i:');
+our $opt_n;
+getopts('ni:');
 
 my $ip = shift;
 
@@ -85,11 +87,27 @@ MISS
 }
 
 my $cmd = "tcpdump -l -ni $opt_i src $ip and tcp";
+my $nmap_cmd = "nmap -PN $ip";
 print "\$ $cmd\n";
+print "\$ $nmap_cmd\n" if($opt_n);
 
 open(HDUMP, "$cmd |") || exit(2);
 my ($last_ts, $last_tsv) = (0, 0);
 my ($first_ts, $first_tsv) = (0, 0);
+
+if($opt_n) {
+    my $pid = fork();
+    die "Could not fork: $!\n" unless(defined($pid));
+
+    if($pid == 0) {
+	sleep(2);
+	close(STDOUT);
+	close(STDERR);
+	system($nmap_cmd);
+
+	exit(0);
+    }
+}
 
 sub INT_handler {
     sleep 2;
@@ -115,7 +133,14 @@ sub INT_handler {
 $SIG{'INT'} = 'INT_handler';
 
 sleep 1;
-print "\nDo some IP traffic with $ip from this host (i.e. nmap -PN $ip).\nPress C-C to get the estimation result.\n\n";
+
+if($opt_n) {
+    print "\nAwaiting IP traffic with $ip from this host."
+}
+else {
+    print "\nDo some IP traffic with $ip from this host (i.e. $nmap_cmd).";
+}
+print "\nPress ^C to get the estimation result.\n\n";
 
 $|++;
 while(<HDUMP>) {
