@@ -1,10 +1,10 @@
 Known Timer Tick Values
 =======================
 
-| Ticks (Hz) | device/OS       |
-+------------+-----------------+
-| 10         | old Windows     |
-| 100        | mordern Windows |
-| 250        | linux (default) |
-| 300        | linux           |
-| 1000       | linux           |
+| ticks (Hz) | operating system |
++------------+------------------+
+| 10         | old Windows      |
+| 100        | Windows          |
+| 250        | linux (default)  |
+| 300        | linux            |
+| 1000       | linux            |
