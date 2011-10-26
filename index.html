@@ -43,22 +43,51 @@
 </table>
 
 <p>
-putts sniffs for Tcp traffic of a remote host. If those Tcp packets contains
-timestamps (RFC1323) this tool might be used to get the systems uptime.
+<em>putts</em> sniffs for Tcp traffic of a remote host. If those Tcp packets contains
+timestamps (<a href="http://www.ietf.org/rfc/rfc1323.txt">RFC 1323</a>) this tool might be used
+to get the systems uptime.
 </p>
 
 <p>
-This script calls tcpdump(8) to get the Tcp timestamps of the target host.
+This script calls <em>tcpdump(8)</em> to get the Tcp timestamps of the target host.
 You have to make Tcp traffic to the remote host after starting putts. Terminate
 putts by pressing C-C after a while. Putts will print the assumed uptime
-if enough data is available.
+if enough data has been collected.
 </p>
+
+<p>
+The determined tick value of the target host gives hints on the targets operating system.
+The following table shows well known tick values for different operating systems:
+</p>
+
+<table border="1">
+    <tr>
+	<th>ticks (Hz)</th>
+	<th>operating system</th>
+    </tr>
+    <tr>
+	<td>10</td><td>old Windows</td>
+    </tr>
+    <tr>
+	<td>100</td><td>Windows</td>
+    </tr>
+    <tr>
+	<td>250</td><td>linux (default)</td>
+    </tr>
+    <tr>
+	<td>300</td><td>linux</td>
+    </tr>
+    <tr>
+	<td>1000</td><td>linux</td>
+    </tr>
+</table>
+
 
 <hr style="margin-bottom: 0px" />
 
 <table cellspacing="5" width="100%" style="margin-top: 0px">
 <tr>
-    <td valign="middle" width="47%" align="left"><small>10-12-2011, <a href="mailto:thomas@fiasko-nw.net">Thomas Liske</a></small></td>
+    <td valign="middle" width="47%" align="left"><small>10-26-2011, <a href="mailto:thomas@fiasko-nw.net">Thomas Liske</a></small></td>
     <td valign="middle" width="1%"><a href="http://validator.w3.org/check/referer"><img src="res/valid-xhtml10.png" alt="Valid XHTML 1.0!" height="31" width="88" style="border: 0px" /></a></td>
 </tr>
 </table>
