@@ -1,8 +1,8 @@
-putts - Probe Uptime by Tcp TimeStamps
-======================================
+# putts - Probe Uptime by Tcp TimeStamps
 
 putts sniffs for Tcp traffic of a remote host. If those Tcp packets contains
-timestamps (RFC 1323) this tool might be used to get the systems uptime.
+timestamps ([RFC 1323](https://www.ietf.org/rfc/rfc1323.txt)) this tool might
+be used to get the systems uptime.
 
 This script calls tcpdump(8) to get the Tcp timestamps of the target host.
 You have to make Tcp traffic to the remote host after starting putts. Terminate
